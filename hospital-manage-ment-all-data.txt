@@ -1,0 +1,158 @@
+CREATE TABLE IF NOT EXISTS Doctor(
+    doctors_id VARCHAR (12) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    	 VARCHAR(15)NOT NULL,
+    doctors_gender VARCHAR(8)NOT NULL,
+    doctors_ph_no VARCHAR(12)NOT NULL,
+    doctors_expertise VARCHAR(15)NOT NULL,
+    doctors_room varchar(10)NOT NULL,
+    doctors_visiting_hour VARCHAR(20)NOT NULL,
+    doctors_qualification VARCHAR(15)NOT NULL
+);
+
+
+INSERT INTO doctor VALUES 
+('6546519','Professor Dr. A. K. M. Musa ','Male','8610793-8',
+'Medicine and Chest Specialist ','313','7PM- 9PM','MBBS(DMC) FCPS(Medicine) DTCD, Gold Medalist (FCPS) '),
+('356868','Prof. Dr. Sarwar Alam','Male','1819494530','Cancer – Oncology','220','9PM-10PM','MBBS, DIH ( DU ), MPhil ( Oncology )'),
+
+('4653516','Dr. Gopen Kumar Kundu','Male','880-2-9612345-54',
+'Pediatric Neurosurgeon','215','8PM-10PM','MBBS, DCH, FCPS'),
+
+('7654654','Professor (Dr.) Md. Fakhrul Islam','Male','184646437',
+'Interventional Cardiologist & Heart Failure Specialist','305','6PM-9PM','MBBS, MD (Cardiology), FESC (Europe), FACC (America)'),
+
+('5646546','Dr. Mohammad Jahangir Talukder','Male','880-2-654684',
+'Acute medical emergency, endocrine, respiratory and infectious diseases','301','8PM-10PM','MBBS(Ctg), MRCP(UK), MRCP (Edin)');
+
+
+
+
+CREATE TABLE IF NOT EXISTS Patient(
+    patient_id VARCHAR (12) NOT NULL PRIMARY KEY,
+    patient_name VARCHAR(15) NOT NULL,
+    patient_gender VARCHAR(6) NOT NULL,
+    patient_age INT(5) NOT NULL,
+    patient_DOB VARCHAR(20) NOT NULL,
+    patient_contact VARCHAR(12) NOT NULL,
+    patient_adress VARCHAR(15) NOT NULL
+)
+
+INSERT INTO patient VALUES
+('18201069','Abdulla Bin Amin','male', 
+23, '26/03/1997', '1686453482', 'Dhaka' ),
+
+('18201071','Imran Nazir','Male',24,'15/12/1996','1846165468','Sirajgong'),
+
+('18201070','Shahriar Shafin','Male',20,'07/02/2000','1915463846','Dinajpur'),
+
+('18201072','Tumpa Shaha','Female',23,'20/09/2000','1715464846','Netrokona'),
+
+('18201074','Tahmid Sakib','Male',21,'07/03/1999','1843153465','Naoga'),
+
+('18201084','Nishat Shahrin','Female',19,'11/07/2001','1546462187','Dhaka'),
+
+('18201091','Nipa Khatun','Female',18,'02/02/2002','17154686531','Pabna')
+
+
+
+
+CREATE TABLE admission_management(
+    admission_no varchar(20) PRIMARY KEY,
+    	 VARCHAR(12),
+    patient_disease VARCHAR(10),
+    patient_room varchar(10),
+    patient_DOSUB VARCHAR(20),
+    patient_DODIS VARCHAR(20),
+    bill_status varchar(15),
+    assign_doctor varchar(12),
+
+    FOREIGN KEY(patient_id) REFERENCES patient(patient_id),
+    FOREIGN KEY(patient_room) REFERENCES cabin_info(cabin_no),
+    FOREIGN KEY(assign_doctor) REFERENCES doctor(doctors_id)    
+);
+
+
+INSERT INTO admission_management VALUES
+('1','18201069','Fever','213','24/07/2020','27/09/2020','paid','4653516'),
+('2','18201070','Asthma','214','14/05/2020','running','Half Paid','6546519'),
+('3','18201071','Cancer','216','19/07/2020','running','Due','356868'),
+('4','18201072','Tonsil','305','02/09/2020','running','Due','5646546'),
+('5','18201074','Food poisoning','302','29/08/2020','10/09/2020','Paid','7654654'),
+('6','18201091','Heart Disease','310','09/09/2020','running','Due','356868'),
+('7','18201084','Covid 19','300','27/09/2020','running','Half Paid','4653516');
+
+
+
+CREATE TABLE cabin_info(
+    cabin_no varchar(12) NOT NULL PRIMARY KEY,
+    cabin_type VARCHAR(10),
+    cabin_booked VARCHAR(12),
+    cabin_luxury_item VARCHAR(10),
+    cabin_free varchar(5),
+   FOREIGN KEY(cabin_booked) REFERENCES Patient(patient_id)
+);
+
+INSERT INTO cabin_info VALUES
+('213','Standard Single','18201069','Internet','NO'),
+('214','Deluxe Single','18201070','TV , AC, Internet','NO'),
+('216','Double Bedded Room','18201071','Internet','NO'),
+('305','Double Bedded Room','18201072','TV,Internet','NO'),
+('302','Standard Single','18201074','Internet,AC','NO'),
+('310','Luxury Single','18201091','Internet,AC','NO'),
+('300','Standard Single','18201084','TV','NO');
+
+INSERT INTO cabin_info (cabin_no,cabin_free) VALUES('415','yes')
+
+INSERT INTO cabin_info (cabin_no,cabin_free) VALUES('420','yes')
+
+
+
+CREATE TABLE IF NOT EXISTS staff(
+    staff_id INT(11)PRIMARY KEY,
+    staff_name VARCHAR(15) ,
+    staff_gender VARCHAR(6),
+    staff_contact VARCHAR(12) ,
+    working_area VARCHAR(15) ,
+
+    FOREIGN KEY(working_area) REFERENCES cabin_info(cabin_no)
+)
+
+INSERT INTO staff VALUES
+(18201065,'Ayman','Male','18468150','213' ),
+
+(18201053,'Eva','Female','156435843','214'),
+
+(18201061,'Sizan','Male','17667816','216'),
+
+(18201059,'Rifat','Male','1685481351','305'),
+
+(18201089,'Sinzon','Female','17615345','302'),
+
+(18201083,'Laka','Female','1843158432','310'),
+
+(18201048,'Zahir','Male','1546648434','300')
+
+
+CREATE TABLE IF NOT EXISTS bill(
+    p_id VARCHAR(12),
+    bill_no INT(11) , 
+    admission_fee DECIMAL(9, 2),
+    surgeon_fee DECIMAL(9, 2),
+    ward_fee DECIMAL(9, 2),
+    equipment_fee DECIMAL(9, 2),
+    diagnostic DECIMAL(9, 2),
+    maintanance_fee DECIMAL(9, 2), 
+ 
+    PRIMARY KEY(bill_no),
+    FOREIGN KEY(p_id) REFERENCES patient(patient_id)
+)
+
+
+INSERT INTO bill VALUES
+('18201069',384, 5000.00,7000.00,500.00,2500.00,4000.00,2000.00),
+('18201071',816,5000.00,6000.00,11500.00,2000.00,3000.00,2000.00),
+('18201070',681,5000.00,8000.00,5000.00,3000.00,2500.00,2000.00),
+('18201072',124,5000.00,7000.00,5000.00,2500.00,3000.00,2000.00),
+('18201074',187,5000.00,8000.00,8500.00,5000.00,7000.00,2000.00),
+('18201084',837,5000.00,10000.00,10000.00,1500.00,1000.00,2000.00),
+('18201091',416,5000.00,8000.00,8500.00,3000.00,3000.00,2000.00)

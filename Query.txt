@@ -1,0 +1,51 @@
+*   Sum of a column-
+
+select sum(admission_fee) Total_admission_fee FROM bill
+
+* find minimun Surgeon feee 
+
+SELECT MIN(surgeon_fee) 
+FROM bill;
+
+*  count bill status 
+
+SELECT bill_status,COUNT(*)
+FROM admission_management
+GROUP BY bill_status;
+
+* total bill
+SELECT (admission_fee+surgeon_fee+ward_fee+equipment_fee+diagnostic+maintanance_fee)Total_Bill
+FROM bill
+where p_id = '18201069';
+
+* total bill maximum by a patient 
+SELECT (admission_fee+surgeon_fee+ward_fee+equipment_fee+diagnostic+maintanance_fee)Total_Bill
+FROM bill
+order by Total_Bill DESC;
+
+ 
+* Join different column form different table
+
+
+Select patient_name,patient_age,cabin_type,cabin_luxury_item
+ FROM patient JOIN cabin_info
+ ON patient.patient_id = cabin_info.cabin_booked
+
+*assigned doctor for a patient
+
+ Select doctors_name,patient_id,patient_disease
+ FROM doctor JOIN admission_management
+ ON doctor.doctors_id = admission_management.assign_doctor
+
+* join query
+SELECT p.patient_name,p.patient_gender,d.doctors_name,d.doctors_expertise,a.patient_disease,a.bill_status
+FROM patient as p,doctor as d,admission_management as a
+WHERE p.patient_id = a.patient_id  AND d.doctors_id = a.assign_doctor
+
+*Sub- query
+
+SELECT patient_name,patient_adress
+FROM patient 
+WHERE patient_id IN (SELECT patient_id
+                     FROM admission_management
+                     WHERE bill_status = 'Due');

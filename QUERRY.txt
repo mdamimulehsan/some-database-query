@@ -1,0 +1,202 @@
+1.How many books writes by a author using writs table
+
+SELECT A_ID,COUNT(A_ID) AS quantity
+FROM writes
+GROUP BY A_ID;
+
+2.Find authors name and their books quantity by joining authors and writes table
+
+SELECT authors.Name, COUNT(writes.A_ID) as quantity
+FROM authors
+JOIN writes
+ON authors.A_ID=writes.A_ID
+GROUP BY writes.A_ID
+ORDER BY authors.Name ASC;
+
+3.find authors id and their books by joining books and authors table
+
+SELECT writes.A_ID,books.Books_title
+FROM books
+JOIN writes
+ON books.ISBN=writes.ISBN
+ORDER BY writes.A_ID ASC;
+
+
+4. find authors name,id,books from books,authors & writes table
+
+SELECT writes.A_ID,authors.Name,books.Books_title
+FROM books
+INNER JOIN writes
+ON books.ISBN=writes.ISBN
+INNER JOIN authors
+ON writes.A_ID=authors.A_ID
+ORDER BY writes.A_ID ASC;
+
+5. Find the author who writes the maximum books
+
+SELECT authors.Name, COUNT(writes.A_ID) as quantity
+FROM authors
+JOIN writes
+ON authors.A_ID=writes.A_ID
+GROUP BY writes.A_ID
+ORDER BY quantity DESC
+LIMIT 1;
+
+6. find eddition date of every books include books name
+
+SELECT books.Books_title, editions.Edition
+FROM books
+INNER JOIN editions
+ON books.ISBN=editions.ISBN;
+
+7.Find publishers and their books
+
+SELECT publishers.Name,books.Books_title
+FROM publishers
+INNER JOIN books
+ON books.PUB_ID=publishers.P_ID;
+
+8.Find publishers and their total published book
+
+SELECT publishers.Name,COUNT(*) AS quantity
+FROM publishers
+INNER JOIN books
+ON books.PUB_ID=publishers.P_ID
+GROUP BY publishers.P_ID
+ORDER BY quantity ASC;
+
+9.Find publisher name,books and published date
+
+SELECT publishers.Name,books.Books_title,published_by.Published_date
+FROM publishers
+JOIN published_by
+ON publishers.P_ID=published_by.P_ID
+JOIN books
+ON books.ISBN=published_by.ISBN;
+
+10. Find the books published after 1999
+
+SELECT publishers.Name,books.Books_title,published_by.Published_date
+FROM publishers
+JOIN published_by
+ON publishers.P_ID=published_by.P_ID
+JOIN books
+ON books.ISBN=published_by.ISBN
+AND published_by.Published_date >='1999-01-01';
+
+11. Find the books using between keyword
+
+SELECT publishers.Name,books.Books_title,published_by.Published_date
+FROM publishers
+JOIN published_by
+ON publishers.P_ID=published_by.P_ID
+JOIN books
+ON books.ISBN=published_by.ISBN
+AND published_by.Published_date BETWEEN '1999-01-01' AND '2002-01-01';
+
+12.Check a book if it's published date is less than 2000 then name it '20th century' otherwise name it 'modern'
+
+SELECT books.Books_title,published_by.Published_date,
+CASE
+    WHEN Published_date<='1999-12-31' THEN '20th Century'
+    ELSE 'Modern'
+    END AS Genre
+FROM books,published_by;
+
+
+13.Find the book which has a title include 'The'
+
+SELECT books.Books_title
+FROM books
+WHERE books.Books_title LIKE '%The%';
+
+14.Find five longest length books
+
+SELECT Books_title,char_length(Books_title) AS Length
+FROM books
+ORDER BY Length DESC
+LIMIT 0,10;
+
+15.Find customers full name without showing null and set null='-'
+
+SELECT CONCAT(First_name,' ', IFNULL(Middl_name,'-'),' ',Last_name) AS Full_Name
+FROM customers;
+
+16. Find customer first name, the book he purchased, and the price 
+
+SELECT customers.First_name,books.Books_title,books.Price
+FROM customers
+JOIN purchase_date
+ON customers.C_ID=purchase_date.C_ID
+JOIN books
+ON books.ISBN=purchase_date.ISBN;
+
+17.Find the customer and the book which cost maximum
+
+SELECT customers.First_name,books.Books_title,MAX(books.Price) AS Max_Price
+FROM customers
+JOIN purchase_date
+ON customers.C_ID=purchase_date.C_ID
+JOIN books
+ON books.ISBN=purchase_date.ISBN;
+
+18. Calculate total selling price of books
+
+SELECT SUM(books.Price) AS Total_sel
+FROM customers
+JOIN purchase_date
+ON customers.C_ID=purchase_date.C_ID
+JOIN books
+ON books.ISBN=purchase_date.ISBN;
+
+19.Find the customers of specific city
+
+SELECT customers.First_name
+FROM customers,contact_info
+WHERE City IN ('Noakhali','Dhaka'); 
+  
+20. Find the books and price which price more than average price of books
+
+SELECT books.Books_title,books.Price
+FROM books
+WHERE books.Price>(SELECT AVG(books.Price)
+                  FROM books
+                  ); 
+
+21.Find the customer who buy a book at first. use subquery
+
+SELECT customers.First_name
+FROM customers
+WHERE customers.C_ID=(
+                       SELECT purchase_date.C_ID
+                       FROM purchase_date
+                       ORDER BY purchase_date.pur_date ASC
+                       LIMIT 1
+                     );
+
+22. find the customer id and their buying books quantity
+
+SELECT purchase_date.C_ID, COUNT(purchase_date.C_ID) AS quantity
+    FROM purchase_date
+    GROUP BY purchase_date.C_ID
+    ORDER BY quantity DESC;
+
+23. find the books which has maximum copy use subquery
+
+SELECT books.Books_title,books.Quantity
+FROM books 
+WHERE books.Quantity=(
+                        SELECT MAX(books.Quantity)
+                        FROM books
+                     );
+
+24. Find the last published book using subquery
+
+SELECT books.ISBN,books.Books_title
+FROM books
+WHERE books.ISBN=(
+                    SELECT published_by.ISBN
+                    FROM published_by
+                    ORDER BY published_by.Published_date DESC   
+                    LIMIT 1
+                 );

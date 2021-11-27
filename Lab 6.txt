@@ -1,0 +1,48 @@
+/*Select c.title, d.building
+from course c, department d using (dept_name)
+*/
+
+/* Select c.title, d.building
+from course c, department d 
+on (c.dept_name = d.dept_name)
+*/
+
+
+ Select c.title, d.building
+from course c, department d 
+where c.dept_name = d.dept_name
+and d.dept_name = 'Biology' ;
+
+ Select i.name instructor_name, d.building,c.room_number
+from instructor i join department d join classroom c
+on (i.dept_name = d.dept_name
+and d.building = c.building) ;
+
+ Select name,salary
+from instructor
+where salary > (select salary
+				from instructor
+				where name ='Wu');
+
+
+ Select T.name,T.salary
+from instructor T, instructor S
+where T.salary > S.salary and S.name ='Wu';
+
+select dept_name
+from instructor
+intersect
+select dept_name
+from student
+where dept_name in ('Comp. Sci.', 'Elec. Eng.', 'Physics');
+
+select dept_name
+from instructor
+except
+select dept_name
+from student
+where dept_name in ('Comp. Sci.', 'Elec. Eng.', 'Physics');
+
+
+
+
